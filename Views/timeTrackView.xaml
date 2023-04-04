@@ -1,0 +1,158 @@
+﻿<UserControl
+  x:Class="timeTrack.Views.timeTrackView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:ViewModels="clr-namespace:timeTrack.ViewModels"
+  xmlns:Views="clr-namespace:timeTrack.Views"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:timeTrack.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  x:Name="timeTrackViewWindow"
+  d:DataContext="{d:DesignInstance ViewModels:TimeTrackVM}"
+  d:DesignHeight="500"
+  d:DesignWidth="800"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <Thickness x:Key="Margin">10</Thickness>
+    <sys:Double x:Key="ButtonMinWidth1">80</sys:Double>
+  </UserControl.Resources>
+
+  <UserControl.InputBindings>
+    <KeyBinding Key="Enter" Command="{Binding AddProject}" />
+  </UserControl.InputBindings>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition />
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="1*" />
+      <ColumnDefinition Width="1" />
+      <ColumnDefinition Width="1*" />
+      <ColumnDefinition Width="1" />
+    </Grid.ColumnDefinitions>
+
+
+    <StackPanel Grid.Row="0" Grid.Column="0">
+      <DockPanel>
+      <Label Content="Enter a new entry" VerticalAlignment="Center"/>
+      <TextBox
+        Grid.Row="0"
+        Grid.Column="0"
+        Margin="{StaticResource Margin}"
+        Text="{Binding TextBoxContentInputProjects}" />
+      </DockPanel>
+
+      <Button
+        Grid.Row="0"
+        Grid.Column="1"
+        Margin="{StaticResource Margin}"
+        Command="{Binding AddProject}"
+        Content="Add entry" />
+    </StackPanel>
+
+    <ListBox
+      Name="ListBoxSelectableProjects"
+      Grid.Row="1"
+      Grid.RowSpan="2"
+      Grid.Column="0"
+      Margin="5"
+      ItemsSource="{Binding SelectableProjects}"
+      SelectedItem="{Binding ListBoxSelectableProjectsSelectedItem}" />
+
+    <WrapPanel
+      Grid.Row="3"
+      Grid.Column="0"
+      Orientation="Vertical">
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding RemoveProjectEntry}"
+        Content="Remove entry" />
+
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding EmptyProjectList}"
+        Content="Empty list" />
+
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding ProjectListLoad}"
+        Content="Load project list" />
+
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding ProjectListSave}"
+        Content="Save project list" />
+    </WrapPanel>
+
+    <GridSplitter
+      Grid.RowSpan="4"
+      Grid.Column="1"
+      Width="10"
+      HorizontalAlignment="Stretch"
+      Background="#FF002AD4" />
+
+    <Button
+      Grid.Row="0"
+      Grid.Column="2"
+      Margin="{StaticResource Margin}"
+      Command="{Binding StartTimeMeasure}"
+      Content="Start time measurement" />
+
+    <Views:ScrollingListBox
+      Grid.Row="1"
+      Grid.RowSpan="2"
+      Grid.Column="2"
+      Margin="5"
+      ItemsSource="{Binding TimeMeasured}"
+      SelectedItem="{Binding ListBoxDisplaySelectedItem, Mode=OneWay}" />
+
+    <WrapPanel
+      Grid.Row="3"
+      Grid.Column="2"
+      Orientation="Vertical">
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding TimeTableListLoad}"
+        Content="Load time table list" />
+
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding TimeTableListSave}"
+        Content="Save time table list" />
+
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding EmptyTimeList}"
+        Content="Empty list" />
+
+      <Button
+        Name="btn_Close"
+        Margin="{StaticResource Margin}"
+        Command="{Binding CloseWindowCommand, Mode=OneWay}"
+        CommandParameter="{Binding ElementName=timeTrackWindow}"
+        Content="Close"
+        FontSize="52"
+        FontWeight="Bold" />
+
+      <!--<Button
+        Margin="{StaticResource Margin}"
+        Command="{Binding OpenFileDialog.OpenCommand}"
+        DataContext="{d:DesignInstance ViewModels:OpenFileDialogVM}"
+        Content="Open time table" />-->
+    </WrapPanel>
+  </Grid>
+
+</UserControl>
