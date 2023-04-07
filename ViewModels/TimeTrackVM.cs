@@ -20,9 +20,9 @@
     private string textBoxContentInputProjects;
     private ObservableCollection<string> timeMeasured = new ObservableCollection<string>();
     private Stopwatch stopWatch;
-    private string _listBoxDisplaySelectedItem;
     private string pathProject = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\projects.txt";
     private string pathTimeTable = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @".\timeTable.txt";
+    private string listBoxDisplaySelectedItem;
 
     public string TextBoxContentInputProjects
     {
@@ -34,84 +34,17 @@
       }
     }
 
-    public ICommand AddProjectCommand => new DelegateCommand(AppendProjectToList);
-
-    public ICommand RemoveProjectEntryCommand => new DelegateCommand(RemoveEntryFromList);
-
-    public ICommand EmptyProjectListCommand => new DelegateCommand(EmptyProjectsList);
-
-    public ICommand ProjectListSaveCommand => new DelegateCommand(SaveProjectList);
-
-    public ICommand SelectLoadAnotherProjectListCommand => new DelegateCommand(SelectLoadAnotherProjectList);
-
-    public ICommand TimeTableListSaveCommand => new DelegateCommand(SaveTimeTableList);
-
-    public ICommand TimeTableListLoadCommand => new DelegateCommand(LoadTimeTableList);
-
-    public ICommand EmptyTimeListCommand => new DelegateCommand(EmptyTimeTableList);
-
-    public ICommand StartTimeMeasureCommand => new DelegateCommand(StartTimer);
-
-    public ICommand CloseWindowCommand => new DelegateCommand(CloseWindowMethod2);
-
-
-    private void CloseWindowMethod2()
-    {
-      Application.Current.Shutdown();
-    }
-
-    public ObservableCollection<string> SelectableProjects
-    {
-      get => selectableProjects;
-      set
-      {
-        selectableProjects = value;
-        RaisePropertyChangedEvent(nameof(SelectableProjects));
-      }
-    }
-
-    public ObservableCollection<string> TimeMeasured
-    {
-      get => timeMeasured;
-      set
-      {
-        selectableProjects = value;
-        RaisePropertyChangedEvent(nameof(TimeMeasured));
-      }
-    }
-
-    public string ListBoxDisplaySelectedItem
-    {
-      get
-      {
-        if (TimeMeasured.Count > 3)
-        {
-          return _listBoxDisplaySelectedItem = TimeMeasured[TimeMeasured.Count - 3];
-        }
-
-        return string.Empty;
-      }
-      set
-      {
-        _listBoxDisplaySelectedItem = value;
-        RaisePropertyChangedEvent(nameof(ListBoxDisplaySelectedItem));
-      }
-    }
-
-    public string ListBoxSelectableProjectsSelectedItem
-    {
-      get => selectedItem;
-      set
-      {
-        selectedItem = value;
-        RaisePropertyChangedEvent(nameof(TextBoxContentInputProjects));
-      }
-    }
-
     public TimeTrackVM()
     {
       LoadProjectList();
       LoadTimeTableList();
+    }
+
+    #region privates
+
+    private void CloseWindowMethod2()
+    {
+      Application.Current.Shutdown();
     }
 
     private void StartTimer()
@@ -257,7 +190,7 @@
       }
     }
 
-    private string GetFilePath()
+    private string DialogFilePath()
     {
       var openFileDialog = new OpenFileDialog()
       {
@@ -294,15 +227,15 @@
       return path;
     }
 
-
     private void SelectLoadAnotherProjectList()
     {
-      pathProject = GetFilePath();
+      pathProject = DialogFilePath();
       LoadProjectList();
     }
 
     private void SaveTimeTableList()
-    {     
+    {
+      pathTimeTable = GetPathSaveDialog();
 
       if (!File.Exists(pathTimeTable))
       {
@@ -325,6 +258,7 @@
 
     private void LoadTimeTableList()
     {
+      pathTimeTable = DialogFilePath();
       if (File.Exists(pathTimeTable))
       {
         using (StreamReader sr = File.OpenText(pathTimeTable))
@@ -338,12 +272,77 @@
       }
     }
 
-    //private void CloseWindow(ICloseable window)
-    //{
-    //  if (window != null)
-    //  {
-    //    window.Close();
-    //  }
-    //}
+    #endregion
+
+    #region properties
+    public ICommand AddProjectCommand => new DelegateCommand(AppendProjectToList);
+
+    public ICommand RemoveProjectEntryCommand => new DelegateCommand(RemoveEntryFromList);
+
+    public ICommand EmptyProjectListCommand => new DelegateCommand(EmptyProjectsList);
+
+    public ICommand ProjectListSaveCommand => new DelegateCommand(SaveProjectList);
+
+    public ICommand SelectLoadAnotherProjectListCommand => new DelegateCommand(SelectLoadAnotherProjectList);
+
+    public ICommand TimeTableListSaveCommand => new DelegateCommand(SaveTimeTableList);
+
+    public ICommand TimeTableListLoadCommand => new DelegateCommand(LoadTimeTableList);
+
+    public ICommand EmptyTimeListCommand => new DelegateCommand(EmptyTimeTableList);
+
+    public ICommand StartTimeMeasureCommand => new DelegateCommand(StartTimer);
+
+    public ICommand CloseWindowCommand => new DelegateCommand(CloseWindowMethod2);
+
+    public ObservableCollection<string> SelectableProjects
+    {
+      get => selectableProjects;
+      set
+      {
+        selectableProjects = value;
+        RaisePropertyChangedEvent(nameof(SelectableProjects));
+      }
+    }
+
+    public ObservableCollection<string> TimeMeasured
+    {
+      get => timeMeasured;
+      set
+      {
+        selectableProjects = value;
+        RaisePropertyChangedEvent(nameof(TimeMeasured));
+      }
+    }
+
+    public string ListBoxDisplaySelectedItem
+    {
+      get
+      {
+        if (TimeMeasured.Count > 3)
+        {
+          return listBoxDisplaySelectedItem = TimeMeasured[TimeMeasured.Count - 3];
+        }
+
+        return string.Empty;
+      }
+      set
+      {
+        listBoxDisplaySelectedItem = value;
+        RaisePropertyChangedEvent(nameof(ListBoxDisplaySelectedItem));
+      }
+    }
+
+    public string ListBoxSelectableProjectsSelectedItem
+    {
+      get => selectedItem;
+      set
+      {
+        selectedItem = value;
+        RaisePropertyChangedEvent(nameof(TextBoxContentInputProjects));
+      }
+    }
+
+    #endregion
   }
 }
