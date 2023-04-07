@@ -6,7 +6,12 @@
   {
     protected override void OnItemsChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-      if(e.NewItems != null)
+      ScrollAutomaticallyLastEntry(e);
+    }
+
+    private void ScrollAutomaticallyLastEntry(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      if (e.NewItems != null)
       {
         int newItemCount = e.NewItems.Count;
 

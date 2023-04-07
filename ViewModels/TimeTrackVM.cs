@@ -15,49 +15,45 @@
 
   public class TimeTrackVM : ObservableObject
   {
-    private ObservableCollection<string> _selectableProjects = new ObservableCollection<string>();
-    private string _selectedItem;
-    private string _textBoxContentInputProjects;
-    private ObservableCollection<string> _timeMeasured = new ObservableCollection<string>();
-    private Stopwatch _stopWatch;
+    private ObservableCollection<string> selectableProjects = new ObservableCollection<string>();
+    private string selectedItem;
+    private string textBoxContentInputProjects;
+    private ObservableCollection<string> timeMeasured = new ObservableCollection<string>();
+    private Stopwatch stopWatch;
     private string _listBoxDisplaySelectedItem;
-    private string _pathProjects = @".\projects.txt";
-    private string _pathTimeTable = @".\timeTable.txt";
-
-
-    //public Action<ICloseable> CloseWindowCommand { get; private set; }
-    //https://stackoverflow.com/questions/16172462/close-window-from-viewmodel
+    private string pathProject = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\projects.txt";
+    private string pathTimeTable = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @".\timeTable.txt";
 
     public string TextBoxContentInputProjects
     {
-      get => _textBoxContentInputProjects;
+      get => textBoxContentInputProjects;
       set
       {
-        _textBoxContentInputProjects = value;
+        textBoxContentInputProjects = value;
         RaisePropertyChangedEvent(nameof(TextBoxContentInputProjects));
       }
     }
 
-    public ICommand AddProject => new DelegateCommand(AppendProjectToList);
+    public ICommand AddProjectCommand => new DelegateCommand(AppendProjectToList);
 
-    public ICommand RemoveProjectEntry => new DelegateCommand(RemoveEntryFromList);
-    
-    public ICommand EmptyProjectList => new DelegateCommand(EmptyProjectsList);
-    
-    public ICommand ProjectListSave => new DelegateCommand(SaveProjectList);
+    public ICommand RemoveProjectEntryCommand => new DelegateCommand(RemoveEntryFromList);
 
-    public ICommand ProjectListLoad => new DelegateCommand(LoadProjectList);
+    public ICommand EmptyProjectListCommand => new DelegateCommand(EmptyProjectsList);
 
-    public ICommand TimeTableListSave => new DelegateCommand(SaveTimeTableList);
+    public ICommand ProjectListSaveCommand => new DelegateCommand(SaveProjectList);
 
-    public ICommand TimeTableListLoad => new DelegateCommand(LoadTimeTableList);
+    public ICommand SelectLoadAnotherProjectListCommand => new DelegateCommand(SelectLoadAnotherProjectList);
 
-    public ICommand EmptyTimeList => new DelegateCommand(EmptyTimeTableList);
+    public ICommand TimeTableListSaveCommand => new DelegateCommand(SaveTimeTableList);
 
-    public ICommand StartTimeMeasure => new DelegateCommand(StartTimer);
+    public ICommand TimeTableListLoadCommand => new DelegateCommand(LoadTimeTableList);
+
+    public ICommand EmptyTimeListCommand => new DelegateCommand(EmptyTimeTableList);
+
+    public ICommand StartTimeMeasureCommand => new DelegateCommand(StartTimer);
 
     public ICommand CloseWindowCommand => new DelegateCommand(CloseWindowMethod2);
-    
+
 
     private void CloseWindowMethod2()
     {
@@ -66,31 +62,31 @@
 
     public ObservableCollection<string> SelectableProjects
     {
-      get => _selectableProjects;
+      get => selectableProjects;
       set
       {
-        _selectableProjects = value;
+        selectableProjects = value;
         RaisePropertyChangedEvent(nameof(SelectableProjects));
       }
     }
 
     public ObservableCollection<string> TimeMeasured
     {
-      get => _timeMeasured;
+      get => timeMeasured;
       set
       {
-        _selectableProjects = value;
+        selectableProjects = value;
         RaisePropertyChangedEvent(nameof(TimeMeasured));
       }
     }
-    
-    public string ListBoxDisplaySelectedItem 
+
+    public string ListBoxDisplaySelectedItem
     {
       get
       {
-        if(TimeMeasured.Count > 3)
+        if (TimeMeasured.Count > 3)
         {
-          return _listBoxDisplaySelectedItem = TimeMeasured[TimeMeasured.Count - 3] ;
+          return _listBoxDisplaySelectedItem = TimeMeasured[TimeMeasured.Count - 3];
         }
 
         return string.Empty;
@@ -102,12 +98,12 @@
       }
     }
 
-    public string ListBoxSelectableProjectsSelectedItem 
+    public string ListBoxSelectableProjectsSelectedItem
     {
-      get => _selectedItem;
+      get => selectedItem;
       set
       {
-        _selectedItem = value;
+        selectedItem = value;
         RaisePropertyChangedEvent(nameof(TextBoxContentInputProjects));
       }
     }
@@ -117,28 +113,28 @@
       LoadProjectList();
       LoadTimeTableList();
     }
-    
+
     private void StartTimer()
     {
-      if (string.IsNullOrEmpty(_selectedItem)) return;
+      if (string.IsNullOrEmpty(selectedItem)) return;
 
-      if (_stopWatch == null)
+      if (stopWatch == null)
       {
-        _stopWatch = new Stopwatch();
+        stopWatch = new Stopwatch();
       }
 
-      if (_stopWatch.IsRunning)
+      if (stopWatch.IsRunning)
       {
-        _stopWatch.Stop();
-        _timeMeasured.Add($"{"Stop:",-8}{DateTime.Now}");
+        stopWatch.Stop();
+        timeMeasured.Add($"{"Stop:",-8}{DateTime.Now}");
         //_timeMeasured.Add($"{_stopWatch.Elapsed}");
 
         AddDurationToTask();
       }
 
-      _stopWatch.Start();
-      _timeMeasured.Add($"{"Task:",-8} {_selectedItem}");
-      _timeMeasured.Add($"{"Start:",-8} {DateTime.Now}");
+      stopWatch.Start();
+      timeMeasured.Add($"{"Task:",-8} {selectedItem}");
+      timeMeasured.Add($"{"Start:",-8} {DateTime.Now}");
 
       RaisePropertyChangedEvent(nameof(ListBoxDisplaySelectedItem));
     }
@@ -148,26 +144,26 @@
       var lastIndexWithTask = GetIndexOfLastEntryWithTask();
       if (lastIndexWithTask >= 0)
       {
-        var valueBefore = _timeMeasured[lastIndexWithTask];
-        var valueAfter = valueBefore + ": " + _stopWatch.Elapsed;
-        _timeMeasured[lastIndexWithTask] = valueAfter;
+        var valueBefore = timeMeasured[lastIndexWithTask];
+        var valueAfter = valueBefore + ": " + stopWatch.Elapsed;
+        timeMeasured[lastIndexWithTask] = valueAfter;
       }
 
-      _timeMeasured.Add(string.Empty);
+      timeMeasured.Add(string.Empty);
     }
 
     private int GetIndexOfLastEntryWithTask()
     {
-      var lastIndex = _timeMeasured.IndexOf(_timeMeasured.Last());
+      var lastIndex = timeMeasured.IndexOf(timeMeasured.Last());
 
-      while (_timeMeasured.Contains("Task") || lastIndex != -1)
+      while (timeMeasured.Contains("Task") || lastIndex != -1)
       {
-        if (_timeMeasured[lastIndex].Contains("Task"))
+        if (timeMeasured[lastIndex].Contains("Task"))
         {
           return lastIndex;
         }
 
-        if (lastIndex == _timeMeasured.IndexOf(_timeMeasured.First()))
+        if (lastIndex == timeMeasured.IndexOf(timeMeasured.First()))
         {
           MessageBox.Show($"No Entry found");
           throw new ArgumentOutOfRangeException("There is no entry for Task.");
@@ -181,14 +177,14 @@
 
     public void AppendProjectToList()
     {
-      if (string.IsNullOrEmpty(_textBoxContentInputProjects))
+      if (string.IsNullOrEmpty(textBoxContentInputProjects))
       {
         return;
       }
-      
-      _selectableProjects.Add(_textBoxContentInputProjects);
-      
-      TextBoxContentInputProjects = String.Empty;
+
+      selectableProjects.Add(textBoxContentInputProjects);
+
+      TextBoxContentInputProjects = string.Empty;
     }
 
     private void RemoveEntryFromList()
@@ -202,7 +198,7 @@
 
     private void EmptyProjectsList()
     {
-        SelectableProjects.Clear();
+      SelectableProjects.Clear();
     }
 
     private void EmptyTimeTableList()
@@ -211,36 +207,47 @@
     }
 
     private void SaveProjectList()
-    {
-      if (!File.Exists(_pathProjects))
+    {      
+      pathProject = GetPathSaveDialog();
+      if (string.IsNullOrEmpty(pathProject)) return;
+
+      if (!File.Exists(pathProject))
       {
-        using (FileStream fs = File.Create(_pathProjects))
+        using (FileStream fs = File.Create(pathProject))
         {
         }
       }
 
-      if (!File.Exists(_pathProjects))
+      if (!File.Exists(pathProject))
       {
-        throw new AccessViolationException($"Cannot access : {_pathProjects}");
+        throw new AccessViolationException($"Cannot access : {pathProject}");
       }
-      else
+
+      using (StreamWriter sw = File.CreateText(pathProject))
       {
-        // Create a file to write to.
-        using (StreamWriter sw = File.CreateText(_pathProjects))
+        foreach (string selectableProject in SelectableProjects)
         {
-          foreach (string selectableProject in SelectableProjects)
-          {
-            sw.WriteLine(selectableProject);
-          }
+          sw.WriteLine(selectableProject);
         }
       }
     }
 
     private void LoadProjectList()
     {
-      if(File.Exists(_pathProjects)){
-        using (StreamReader sr = File.OpenText(_pathProjects))
+      if (File.Exists(pathProject))
+      {
+        using (StreamReader sr = File.OpenText(pathProject))
         {
+          if(SelectableProjects.Count != 0)
+          {
+            var emptyListeUserDecision = MessageBox.Show("Shall the list be emptied?", "Empty list?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.None);
+          
+          if (emptyListeUserDecision == MessageBoxResult.Yes)
+          {
+            SelectableProjects.Clear();
+          }
+          }
+
           string s;
           while ((s = sr.ReadLine()) != null)
           {
@@ -250,18 +257,63 @@
       }
     }
 
-    private void SaveTimeTableList()
+    private string GetFilePath()
     {
-      if (!File.Exists(_pathTimeTable))
+      var openFileDialog = new OpenFileDialog()
       {
-        using (FileStream fs = File.Create(_pathTimeTable))
+        Title = "Open file.",
+        DefaultExt = "txt",
+        Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        CheckFileExists = true,
+        Multiselect = false,
+      };
+
+      openFileDialog.ShowDialog();
+      var path = openFileDialog.FileName;
+      if (string.IsNullOrEmpty(path)) return string.Empty;
+
+      return path;
+    }
+
+    private string GetPathSaveDialog()
+    {
+      SaveFileDialog saveFileDialog = new SaveFileDialog()
+      {
+        Title = "Save to",
+        DefaultExt = "txt",
+        Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+      };
+
+      saveFileDialog.ShowDialog();
+      var path = saveFileDialog.FileName;
+
+      if (string.IsNullOrEmpty(path)) return string.Empty;
+
+      return path;
+    }
+
+
+    private void SelectLoadAnotherProjectList()
+    {
+      pathProject = GetFilePath();
+      LoadProjectList();
+    }
+
+    private void SaveTimeTableList()
+    {     
+
+      if (!File.Exists(pathTimeTable))
+      {
+        using (FileStream fs = File.Create(pathTimeTable))
         {
         }
       }
 
-      if (File.Exists(_pathTimeTable))
+      if (File.Exists(pathTimeTable))
       {
-        using (StreamWriter sw = File.CreateText(_pathTimeTable))
+        using (StreamWriter sw = File.CreateText(pathTimeTable))
         {
           foreach (string listEntry in TimeMeasured)
           {
@@ -273,9 +325,9 @@
 
     private void LoadTimeTableList()
     {
-      if (File.Exists(_pathTimeTable))
+      if (File.Exists(pathTimeTable))
       {
-        using (StreamReader sr = File.OpenText(_pathTimeTable))
+        using (StreamReader sr = File.OpenText(pathTimeTable))
         {
           string s;
           while ((s = sr.ReadLine()) != null)
@@ -285,7 +337,7 @@
         }
       }
     }
-    
+
     //private void CloseWindow(ICloseable window)
     //{
     //  if (window != null)
