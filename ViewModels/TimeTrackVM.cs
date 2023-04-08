@@ -12,100 +12,77 @@
   using CommunityToolkit.Mvvm.Input;
   using Microsoft.Win32;
   using timeTrack.Views;
+  using Newtonsoft.Json;
+  using System.Windows.Controls;
 
   public class TimeTrackVM : ObservableObject
   {
+    #region fields
+
     private ObservableCollection<string> selectableProjects = new ObservableCollection<string>();
-    private string selectedItem;
+    private string selectedTaskNameItem;
     private string textBoxContentInputProjects;
-    private ObservableCollection<string> timeMeasured = new ObservableCollection<string>();
+    private ObservableCollection<TaskItem> taskList = new ObservableCollection<TaskItem>();
     private Stopwatch stopWatch;
     private string pathProject = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\projects.txt";
-    private string pathTimeTable = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @".\timeTable.txt";
-    private string listBoxDisplaySelectedItem;
+    private string pathTaskMeasurements = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\taskList.json";
 
-    public string TextBoxContentInputProjects
-    {
-      get => textBoxContentInputProjects;
-      set
-      {
-        textBoxContentInputProjects = value;
-        RaisePropertyChangedEvent(nameof(TextBoxContentInputProjects));
-      }
-    }
+    #endregion
+
+    #region constructor
 
     public TimeTrackVM()
     {
       LoadProjectList();
       LoadTimeTableList();
+      CreateTestData();
     }
+
+    private void CreateTestData()
+    {
+      taskList.Add(new TaskItem { TaskName = "test", End = DateTime.Now, Start = DateTime.Now });
+    }
+
+    #endregion
 
     #region privates
 
-    private void CloseWindowMethod2()
+    private void CloseWindowMethod()
     {
       Application.Current.Shutdown();
     }
 
-    private void StartTimer()
+    private void StartTimer(DataGrid tasksListViewItem)
     {
-      if (string.IsNullOrEmpty(selectedItem)) return;
+      if (string.IsNullOrEmpty(selectedTaskNameItem))
+      {
+        MessageBox.Show("Please select a task.");
+        return;
+      };
 
       if (stopWatch == null)
       {
         stopWatch = new Stopwatch();
       }
-
+      
       if (stopWatch.IsRunning)
       {
         stopWatch.Stop();
-        timeMeasured.Add($"{"Stop:",-8}{DateTime.Now}");
-        //_timeMeasured.Add($"{_stopWatch.Elapsed}");
-
-        AddDurationToTask();
+        var indexOfLastItem = taskList.IndexOf(taskList.Last());
+        taskList[indexOfLastItem].End = DateTime.Now;
+        taskList[indexOfLastItem].Duration = stopWatch.Elapsed;
       }
-
+      
       stopWatch.Start();
-      timeMeasured.Add($"{"Task:",-8} {selectedItem}");
-      timeMeasured.Add($"{"Start:",-8} {DateTime.Now}");
-
-      RaisePropertyChangedEvent(nameof(ListBoxDisplaySelectedItem));
-    }
-
-    private void AddDurationToTask()
-    {
-      var lastIndexWithTask = GetIndexOfLastEntryWithTask();
-      if (lastIndexWithTask >= 0)
+      taskList.Add(new TaskItem
       {
-        var valueBefore = timeMeasured[lastIndexWithTask];
-        var valueAfter = valueBefore + ": " + stopWatch.Elapsed;
-        timeMeasured[lastIndexWithTask] = valueAfter;
-      }
+        TaskName = selectedTaskNameItem,
+        Start = DateTime.Now,
+      });
 
-      timeMeasured.Add(string.Empty);
-    }
-
-    private int GetIndexOfLastEntryWithTask()
-    {
-      var lastIndex = timeMeasured.IndexOf(timeMeasured.Last());
-
-      while (timeMeasured.Contains("Task") || lastIndex != -1)
-      {
-        if (timeMeasured[lastIndex].Contains("Task"))
-        {
-          return lastIndex;
-        }
-
-        if (lastIndex == timeMeasured.IndexOf(timeMeasured.First()))
-        {
-          MessageBox.Show($"No Entry found");
-          throw new ArgumentOutOfRangeException("There is no entry for Task.");
-        }
-
-        lastIndex--;
-      }
-
-      return -1;
+      // todo: set focus in list to last item.
+      RaisePropertyChangedEvent(nameof(Tasklist));
+      tasksListViewItem.Items.Refresh();
     }
 
     public void AppendProjectToList()
@@ -136,11 +113,19 @@
 
     private void EmptyTimeTableList()
     {
-      TimeMeasured.Clear();
+      if (stopWatch != null && stopWatch.IsRunning)
+      {
+        stopWatch.Stop();
+        stopWatch.Reset();
+      }
+
+      taskList.Clear();
+
+      RaisePropertyChangedEvent(nameof(Tasklist));
     }
 
     private void SaveProjectList()
-    {      
+    {
       pathProject = GetPathSaveDialog();
       if (string.IsNullOrEmpty(pathProject)) return;
 
@@ -171,14 +156,14 @@
       {
         using (StreamReader sr = File.OpenText(pathProject))
         {
-          if(SelectableProjects.Count != 0)
+          if (SelectableProjects.Count != 0)
           {
             var emptyListeUserDecision = MessageBox.Show("Shall the list be emptied?", "Empty list?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.None);
-          
-          if (emptyListeUserDecision == MessageBoxResult.Yes)
-          {
-            SelectableProjects.Clear();
-          }
+
+            if (emptyListeUserDecision == MessageBoxResult.Yes)
+            {
+              SelectableProjects.Clear();
+            }
           }
 
           string s;
@@ -190,32 +175,13 @@
       }
     }
 
-    private string DialogFilePath()
-    {
-      var openFileDialog = new OpenFileDialog()
-      {
-        Title = "Open file.",
-        DefaultExt = "txt",
-        Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
-        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        CheckFileExists = true,
-        Multiselect = false,
-      };
-
-      openFileDialog.ShowDialog();
-      var path = openFileDialog.FileName;
-      if (string.IsNullOrEmpty(path)) return string.Empty;
-
-      return path;
-    }
-
     private string GetPathSaveDialog()
     {
       SaveFileDialog saveFileDialog = new SaveFileDialog()
       {
         Title = "Save to",
-        DefaultExt = "txt",
-        Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+        DefaultExt = "json",
+        Filter = "json files (*.json)|*.json|All files (*.*)|*.*",
         InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
       };
 
@@ -227,49 +193,78 @@
       return path;
     }
 
-    private void SelectLoadAnotherProjectList()
+    private void SelectAnotherProjectList()
     {
       pathProject = DialogFilePath();
       LoadProjectList();
     }
 
+    private void SelectLoadAnotherTimeList()
+    {
+      if(stopWatch != null && stopWatch.IsRunning)
+      {
+        stopWatch.Stop();
+        stopWatch.Reset();
+      }
+
+      pathTaskMeasurements = DialogFilePath();
+      LoadTimeTableList();
+    }
+
     private void SaveTimeTableList()
     {
-      pathTimeTable = GetPathSaveDialog();
+      pathTaskMeasurements = GetPathSaveDialog();
 
-      if (!File.Exists(pathTimeTable))
+      if (string.IsNullOrEmpty(pathTaskMeasurements)) return;
+
+      if (!File.Exists(pathTaskMeasurements))
       {
-        using (FileStream fs = File.Create(pathTimeTable))
+        using (FileStream fs = File.Create(pathTaskMeasurements))
         {
         }
       }
 
-      if (File.Exists(pathTimeTable))
+      if (File.Exists(pathTaskMeasurements))
       {
-        using (StreamWriter sw = File.CreateText(pathTimeTable))
-        {
-          foreach (string listEntry in TimeMeasured)
-          {
-            sw.WriteLine(listEntry);
-          }
-        }
+        var tasListAsJson = JsonConvert.SerializeObject(taskList, Formatting.Indented);
+        File.WriteAllText(pathTaskMeasurements, tasListAsJson);
       }
     }
 
     private void LoadTimeTableList()
     {
-      pathTimeTable = DialogFilePath();
-      if (File.Exists(pathTimeTable))
+      if (!File.Exists(pathTaskMeasurements)) return;
+
+      var readOutFile = File.ReadAllText(pathTaskMeasurements);
+      try
       {
-        using (StreamReader sr = File.OpenText(pathTimeTable))
-        {
-          string s;
-          while ((s = sr.ReadLine()) != null)
-          {
-            TimeMeasured.Add(s);
-          }
-        }
+        var tasks = JsonConvert.DeserializeObject<ObservableCollection<TaskItem>>(readOutFile);
+        taskList = tasks;
+        RaisePropertyChangedEvent(nameof(Tasklist));
       }
+      catch(Exception ex)
+      {
+        MessageBox.Show(ex.Message);
+      }
+    }
+
+    private string DialogFilePath()
+    {
+      var openFileDialog = new OpenFileDialog()
+      {
+        Title = "Open file.",
+        DefaultExt = "json",
+        Filter = "json files (*.json)|*.json|All files (*.*)|*.*",
+        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        CheckFileExists = true,
+        Multiselect = false,
+      };
+
+      openFileDialog.ShowDialog();
+      var path = openFileDialog.FileName;
+      if (string.IsNullOrEmpty(path)) return string.Empty;
+
+      return path;
     }
 
     #endregion
@@ -283,17 +278,17 @@
 
     public ICommand ProjectListSaveCommand => new DelegateCommand(SaveProjectList);
 
-    public ICommand SelectLoadAnotherProjectListCommand => new DelegateCommand(SelectLoadAnotherProjectList);
+    public ICommand SelectLoadAnotherProjectListCommand => new DelegateCommand(SelectAnotherProjectList);
 
     public ICommand TimeTableListSaveCommand => new DelegateCommand(SaveTimeTableList);
 
-    public ICommand TimeTableListLoadCommand => new DelegateCommand(LoadTimeTableList);
+    public ICommand SelectAnotherTimeListCommand => new DelegateCommand(SelectLoadAnotherTimeList);
 
     public ICommand EmptyTimeListCommand => new DelegateCommand(EmptyTimeTableList);
 
-    public ICommand StartTimeMeasureCommand => new DelegateCommand(StartTimer);
+    public ICommand StartTimeMeasureCommand => new RelayCommand<DataGrid>(StartTimer);
 
-    public ICommand CloseWindowCommand => new DelegateCommand(CloseWindowMethod2);
+    public ICommand CloseWindowCommand => new DelegateCommand(CloseWindowMethod);
 
     public ObservableCollection<string> SelectableProjects
     {
@@ -305,40 +300,32 @@
       }
     }
 
-    public ObservableCollection<string> TimeMeasured
+    public ObservableCollection<TaskItem> Tasklist
     {
-      get => timeMeasured;
+      get => taskList;
       set
       {
-        selectableProjects = value;
-        RaisePropertyChangedEvent(nameof(TimeMeasured));
-      }
-    }
-
-    public string ListBoxDisplaySelectedItem
-    {
-      get
-      {
-        if (TimeMeasured.Count > 3)
-        {
-          return listBoxDisplaySelectedItem = TimeMeasured[TimeMeasured.Count - 3];
-        }
-
-        return string.Empty;
-      }
-      set
-      {
-        listBoxDisplaySelectedItem = value;
-        RaisePropertyChangedEvent(nameof(ListBoxDisplaySelectedItem));
+        taskList = value;
+        RaisePropertyChangedEvent(nameof(Tasklist));
       }
     }
 
     public string ListBoxSelectableProjectsSelectedItem
     {
-      get => selectedItem;
+      get => selectedTaskNameItem;
       set
       {
-        selectedItem = value;
+        selectedTaskNameItem = value;
+        RaisePropertyChangedEvent(nameof(TextBoxContentInputProjects));
+      }
+    }
+
+    public string TextBoxContentInputProjects
+    {
+      get => textBoxContentInputProjects;
+      set
+      {
+        textBoxContentInputProjects = value;
         RaisePropertyChangedEvent(nameof(TextBoxContentInputProjects));
       }
     }
