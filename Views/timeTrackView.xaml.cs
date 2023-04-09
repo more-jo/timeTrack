@@ -29,5 +29,10 @@ namespace timeTrack.Views
     {
       this.Close();
     }
+
+    private void DataGrid_SourceUpdated(object sender, DataTransferEventArgs e)
+    {
+
+    }
   }
 }

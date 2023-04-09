@@ -6,7 +6,12 @@
   {
     protected override void OnItemsChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-      if(e.NewItems != null)
+      ScrollAutomaticallyLastEntry(e);
+    }
+
+    private void ScrollAutomaticallyLastEntry(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      if (e.NewItems != null)
       {
         int newItemCount = e.NewItems.Count;
 
@@ -20,5 +25,5 @@
     }
   }
 
-  // copy items: https://jamesmccaffrey.wordpress.com/2012/09/13/copying-a-wpf-listbox-selected-item-via-ctrl-c-and-a-context-menu/
+  // todo: copy items: https://jamesmccaffrey.wordpress.com/2012/09/13/copying-a-wpf-listbox-selected-item-via-ctrl-c-and-a-context-menu/
 }

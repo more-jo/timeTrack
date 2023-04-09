@@ -1,0 +1,227 @@
+﻿<Window x:Class="timeTrack.Views.DetailView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:timeTrack.Views"
+        xmlns:vm="clr-namespace:timeTrack.ViewModels"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        x:Name="Wnd_Detail"
+        Title="DetailView" 
+        Height="500" 
+        Width="400"
+        >
+
+  <Window.DataContext>
+    <vm:DetailVM/>
+  </Window.DataContext>
+
+  <Window.Resources>
+    <Thickness x:Key="Margin">10</Thickness>
+    <system:Int32 x:Key="TextBlockColumnPosition">0</system:Int32>
+    <system:Int32 x:Key="TextBoxColumnPosition">1</system:Int32>
+    <system:Int32 x:Key="ButtonColumnPosition">2</system:Int32>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="80" />
+      <ColumnDefinition Width="1*" />
+      <ColumnDefinition Width="auto" Name="ButtonColumn"/>
+    </Grid.ColumnDefinitions>
+
+    <TextBlock
+      Grid.Row="0"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="Task Name"/>
+    <TextBox 
+      Grid.Row="0"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskName"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.TaskName, Mode=OneWay  }"   />
+    <Button 
+      Grid.Row="0"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskName, Path=Text}"/>
+
+    <TextBlock
+      Grid.Row="1"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="Start Day"/>
+    <TextBox 
+      Grid.Row="1"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskStartDay"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.Start.Day, Mode=OneWay, StringFormat={}{0:D2} }"   />
+    <Button 
+      Grid.Row="1"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskStartDay, Path=Text}"/>
+
+    <TextBlock
+      Grid.Row="2"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="Start Hour"/>
+    <TextBox 
+      Grid.Row="2"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskStartHour"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.Start.Hour, Mode=OneWay, StringFormat={}{0:D2} }"   />
+    <Button 
+      Grid.Row="2"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskStartHour, Path=Text}"/>
+
+    <TextBlock
+      Grid.Row="3"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="Start Minute"/>
+    <TextBox 
+      Grid.Row="3"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskStartMinute"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.Start.Minute, Mode=OneWay, StringFormat={}{0:D2} }"   />
+    <Button 
+      Grid.Row="3"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskStartMinute, Path=Text}"/>
+
+    <TextBlock
+      Grid.Row="4"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="End Day"/>
+    <TextBox 
+      Grid.Row="4"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskEndDay"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.End.Day, Mode=OneWay, StringFormat={}{0:D2} }"   />
+    <Button 
+      Grid.Row="4"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskEndDay, Path=Text}"/>
+
+    <TextBlock
+      Grid.Row="5"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="End Hour"/>
+    <TextBox 
+      Grid.Row="5"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskEndHour"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.End.Hour, Mode=OneWay, StringFormat={}{0:D2} }"   />
+    <Button 
+      Grid.Row="5"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskEndHour, Path=Text}"/>
+
+    <TextBlock
+      Grid.Row="6"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="End Minute"/>
+    <TextBox 
+      Grid.Row="6"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskEndMinute"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.End.Minute, Mode=OneWay, StringFormat={}{0:D2} }"   />
+    <Button 
+      Grid.Row="6"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskEndMinute, Path=Text}"/>
+
+    <TextBlock
+      Grid.Row="7"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="Duration"/>
+    <TextBox 
+      Grid.Row="7"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskDuration"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.Duration, StringFormat=hh\\:mm }"   />
+    <Button 
+      Grid.Row="7"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskDuration, Path=Text}"/>
+
+    <Button
+      Grid.Row="8"
+      Grid.RowSpan="2"
+      Grid.ColumnSpan="3"
+      Name="btn_Close"
+      Margin="{StaticResource Margin}"
+      Command="{Binding CloseWindowCmd, Mode=OneWay}"
+      CommandParameter="{Binding ElementName=Wnd_Detail}"
+      Content="Close"
+      FontWeight="Bold"/>
+
+  </Grid>
+</Window>

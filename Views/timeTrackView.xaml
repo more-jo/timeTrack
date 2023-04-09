@@ -8,6 +8,7 @@
   xmlns:local="clr-namespace:timeTrack.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  xmlns:b="http://schemas.microsoft.com/expression/2010/interactivity"
   x:Name="timeTrackViewWindow"
   d:DataContext="{d:DesignInstance ViewModels:TimeTrackVM}"
   d:DesignHeight="500"
@@ -20,7 +21,9 @@
   </UserControl.Resources>
 
   <UserControl.InputBindings>
-    <KeyBinding Key="Enter" Command="{Binding AddProject}" />
+    <KeyBinding Key="Enter" Command="{Binding AddProjectCommand}" />
+    <KeyBinding Key="F4" Command="{Binding CloseWindowCommand, Mode=OneWay}"
+                CommandParameter="{Binding ElementName=timeTrackWindow}"/>
   </UserControl.InputBindings>
 
   <Grid>
@@ -40,8 +43,8 @@
 
     <StackPanel Grid.Row="0" Grid.Column="0">
       <DockPanel>
-      <Label Content="Enter a new entry" VerticalAlignment="Center"/>
-      <TextBox
+        <Label Content="Enter a new entry" VerticalAlignment="Center"/>
+        <TextBox
         Grid.Row="0"
         Grid.Column="0"
         Margin="{StaticResource Margin}"
@@ -52,7 +55,7 @@
         Grid.Row="0"
         Grid.Column="1"
         Margin="{StaticResource Margin}"
-        Command="{Binding AddProject}"
+        Command="{Binding AddProjectCommand}"
         Content="Add entry" />
     </StackPanel>
 
@@ -69,35 +72,42 @@
       Grid.Row="3"
       Grid.Column="0"
       Orientation="Vertical">
+      
       <Button
         MinWidth="{StaticResource ButtonMinWidth1}"
         Margin="{StaticResource Margin}"
-        Command="{Binding RemoveProjectEntry}"
+        Command="{Binding RemoveProjectEntryCommand}"
         Content="Remove entry" />
 
       <Button
         MinWidth="{StaticResource ButtonMinWidth1}"
         Margin="{StaticResource Margin}"
-        Command="{Binding EmptyProjectList}"
+        Command="{Binding EmptyProjectListCommand}"
         Content="Empty list" />
 
       <Button
         MinWidth="{StaticResource ButtonMinWidth1}"
         Margin="{StaticResource Margin}"
-        Command="{Binding ProjectListLoad}"
+        Command="{Binding SelectLoadAnotherProjectListCommand}"
         Content="Load project list" />
 
       <Button
         MinWidth="{StaticResource ButtonMinWidth1}"
         Margin="{StaticResource Margin}"
-        Command="{Binding ProjectListSave}"
-        Content="Save project list" />
+        Command="{Binding SaveProjectListCmd}"
+        Content="Save" />
+
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding SaveAs_ProjectListCmd}"
+        Content="Save as" />
     </WrapPanel>
 
     <GridSplitter
       Grid.RowSpan="4"
       Grid.Column="1"
-      Width="10"
+      Width="20"
       HorizontalAlignment="Stretch"
       Background="#FF002AD4" />
 
@@ -105,54 +115,77 @@
       Grid.Row="0"
       Grid.Column="2"
       Margin="{StaticResource Margin}"
-      Command="{Binding StartTimeMeasure}"
+      Command="{Binding StartTimeMeasureCommand}"
+      CommandParameter="{Binding ElementName=Dtg_taskList}"
       Content="Start time measurement" />
 
-    <Views:ScrollingListBox
+    <DataGrid
+      Name="Dtg_taskList"
+      Grid.Row="1"
+      Grid.Column="2"
+      Grid.RowSpan="2"
+      Margin="5"
+      ItemsSource="{Binding Tasklist, Mode=TwoWay}"
+      IsReadOnly="True"
+      AlternationCount="2"
+      AlternatingRowBackground="SkyBlue" 
+      >
+      
+      <b:Interaction.Triggers>
+        <b:EventTrigger EventName="MouseDoubleClick">
+          <b:InvokeCommandAction Command="{Binding DetailCmd}"
+                                           CommandParameter="{Binding ElementName=Dtg_taskList, Path=SelectedItem}"/>
+        </b:EventTrigger>
+      </b:Interaction.Triggers>
+    
+    </DataGrid>
+
+    <Grid
       Grid.Row="1"
       Grid.RowSpan="2"
       Grid.Column="2"
       Margin="5"
-      ItemsSource="{Binding TimeMeasured}"
-      SelectedItem="{Binding ListBoxDisplaySelectedItem, Mode=OneWay}" />
+      />
 
-    <WrapPanel
+    <DockPanel
       Grid.Row="3"
-      Grid.Column="2"
-      Orientation="Vertical">
-      <Button
-        MinWidth="{StaticResource ButtonMinWidth1}"
-        Margin="{StaticResource Margin}"
-        Command="{Binding TimeTableListLoad}"
-        Content="Load time table list" />
+      Grid.Column="2">
+      <WrapPanel
+            Orientation="Vertical"        >
+        <Button
+            MinWidth="{StaticResource ButtonMinWidth1}"
+            Margin="{StaticResource Margin}"
+            Command="{Binding SelectAnotherTimeListCommand}"
+            Content="Load time table list" />
+
+        <Button
+            MinWidth="{StaticResource ButtonMinWidth1}"
+            Margin="{StaticResource Margin}"
+            Command="{Binding EmptyTimeListCommand}"
+            Content="Empty list" />
+
+        <Button
+            MinWidth="{StaticResource ButtonMinWidth1}"
+            Margin="{StaticResource Margin}"
+            Command="{Binding SaveTimeTableListCmd}"
+            Content="Save time table list" />
+
+        <Button
+            MinWidth="{StaticResource ButtonMinWidth1}"
+            Margin="{StaticResource Margin}"
+            Command="{Binding SaveAs_TimeTableListCmd}"
+            Content="Save as" />
+      </WrapPanel>
 
       <Button
-        MinWidth="{StaticResource ButtonMinWidth1}"
-        Margin="{StaticResource Margin}"
-        Command="{Binding TimeTableListSave}"
-        Content="Save time table list" />
-
-      <Button
-        MinWidth="{StaticResource ButtonMinWidth1}"
-        Margin="{StaticResource Margin}"
-        Command="{Binding EmptyTimeList}"
-        Content="Empty list" />
-
-      <Button
-        Name="btn_Close"
-        Margin="{StaticResource Margin}"
-        Command="{Binding CloseWindowCommand, Mode=OneWay}"
-        CommandParameter="{Binding ElementName=timeTrackWindow}"
-        Content="Close"
-        FontSize="52"
-        FontWeight="Bold" />
-
-      <!--<Button
-        Margin="{StaticResource Margin}"
-        Command="{Binding OpenFileDialog.OpenCommand}"
-        DataContext="{d:DesignInstance ViewModels:OpenFileDialogVM}"
-        Content="Open time table" />-->
-    </WrapPanel>
+                Name="btn_Close"
+                Margin="{StaticResource Margin}"
+                Command="{Binding CloseWindowCommand, Mode=OneWay}"
+                CommandParameter="{Binding ElementName=timeTrackWindow}"
+                Content="Close"
+                FontSize="52"
+                FontWeight="Bold" />
+    </DockPanel>
   </Grid>
 
 </UserControl>
