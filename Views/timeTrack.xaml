@@ -9,8 +9,8 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   x:Name="timeTrackWindow"
   Title="MainWindow"
-  Width="800"
-  Height="450"
+  Width="900"
+  Height="559"
   d:DataContext="d:designInstance ViewModels:TimeTrackVM"
   mc:Ignorable="d">
 
@@ -19,4 +19,10 @@
   </Window.DataContext>
 
   <Views:timeTrackView />
+
+  <Window.InputBindings>
+    <KeyBinding Key="F4" Command="{Binding CloseWindowCommand, Mode=OneWay}"
+                CommandParameter="{Binding ElementName=timeTrackWindow}"/>
+  </Window.InputBindings>
+  
 </Window>

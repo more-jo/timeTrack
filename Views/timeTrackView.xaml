@@ -8,6 +8,7 @@
   xmlns:local="clr-namespace:timeTrack.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  xmlns:b="http://schemas.microsoft.com/expression/2010/interactivity"
   x:Name="timeTrackViewWindow"
   d:DataContext="{d:DesignInstance ViewModels:TimeTrackVM}"
   d:DesignHeight="500"
@@ -99,7 +100,7 @@
     <GridSplitter
       Grid.RowSpan="4"
       Grid.Column="1"
-      Width="10"
+      Width="20"
       HorizontalAlignment="Stretch"
       Background="#FF002AD4" />
 
@@ -117,9 +118,19 @@
       Grid.Column="2"
       Grid.RowSpan="2"
       Margin="5"
-      ItemsSource="{Binding Tasklist, Mode = TwoWay}"
-      IsReadOnly="True" 
+      ItemsSource="{Binding Tasklist, Mode=TwoWay}"
+      IsReadOnly="True"
+      AlternationCount="2"
+      AlternatingRowBackground="SkyBlue" 
       >
+      
+      <b:Interaction.Triggers>
+        <b:EventTrigger EventName="MouseDoubleClick">
+          <b:InvokeCommandAction Command="{Binding DetailCmd}"
+                                           CommandParameter="{Binding ElementName=Dtg_taskList, Path=SelectedItem}"/>
+        </b:EventTrigger>
+      </b:Interaction.Triggers>
+    
     </DataGrid>
 
     <Grid
@@ -152,7 +163,6 @@
             Command="{Binding EmptyTimeListCommand}"
             Content="Empty list" />
       </WrapPanel>
-
 
       <Button
                 Name="btn_Close"

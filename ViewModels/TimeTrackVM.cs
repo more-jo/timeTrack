@@ -289,6 +289,14 @@
     public ICommand StartTimeMeasureCommand => new RelayCommand<DataGrid>(StartTimer);
 
     public ICommand CloseWindowCommand => new DelegateCommand(CloseWindowMethod);
+    public ICommand DetailCmd => new RelayCommand<TaskItem>(ShowTimeListDetails);
+
+    private void ShowTimeListDetails(TaskItem selectedItem)
+    {
+      DetailView dialog = new DetailView();
+      (dialog.DataContext as DetailVM).GridSelectedTaskItem = selectedItem;
+      dialog.ShowDialog();
+    }
 
     public ObservableCollection<string> SelectableProjects
     {

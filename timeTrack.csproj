@@ -108,14 +108,22 @@
     </ApplicationDefinition>
     <Compile Include="Model\TaskItem.cs" />
     <Compile Include="ViewModels\DelegateCommand.cs" />
+    <Compile Include="ViewModels\DetailVM.cs" />
     <Compile Include="ViewModels\ObservableObject.cs" />
     <Compile Include="ViewModels\OpenFileDialogVM.cs" />
     <Compile Include="ViewModels\TimeTrackVM.cs" />
+    <Compile Include="Views\DetailView.xaml.cs">
+      <DependentUpon>DetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ScrollingListBox.cs" />
     <Compile Include="Views\ICloseable.cs" />
     <Compile Include="Views\timeTrackView.xaml.cs">
       <DependentUpon>timeTrackView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\DetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\timeTrack.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -6,3 +6,5 @@
 /obj/Debug
 /packages
 /.vs/timeTrack
+/bin/Release
+/obj/Release
