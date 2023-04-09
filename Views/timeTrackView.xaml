@@ -72,6 +72,7 @@
       Grid.Row="3"
       Grid.Column="0"
       Orientation="Vertical">
+      
       <Button
         MinWidth="{StaticResource ButtonMinWidth1}"
         Margin="{StaticResource Margin}"
@@ -93,8 +94,14 @@
       <Button
         MinWidth="{StaticResource ButtonMinWidth1}"
         Margin="{StaticResource Margin}"
-        Command="{Binding ProjectListSaveCommand}"
-        Content="Save project list" />
+        Command="{Binding SaveProjectListCmd}"
+        Content="Save" />
+
+      <Button
+        MinWidth="{StaticResource ButtonMinWidth1}"
+        Margin="{StaticResource Margin}"
+        Command="{Binding SaveAs_ProjectListCmd}"
+        Content="Save as" />
     </WrapPanel>
 
     <GridSplitter
@@ -154,14 +161,20 @@
         <Button
             MinWidth="{StaticResource ButtonMinWidth1}"
             Margin="{StaticResource Margin}"
-            Command="{Binding TimeTableListSaveCommand}"
+            Command="{Binding EmptyTimeListCommand}"
+            Content="Empty list" />
+
+        <Button
+            MinWidth="{StaticResource ButtonMinWidth1}"
+            Margin="{StaticResource Margin}"
+            Command="{Binding SaveTimeTableListCmd}"
             Content="Save time table list" />
 
         <Button
             MinWidth="{StaticResource ButtonMinWidth1}"
             Margin="{StaticResource Margin}"
-            Command="{Binding EmptyTimeListCommand}"
-            Content="Empty list" />
+            Command="{Binding SaveAs_TimeTableListCmd}"
+            Content="Save as" />
       </WrapPanel>
 
       <Button
