@@ -1,19 +1,16 @@
 ﻿namespace timeTrack.ViewModels {
   using System;
   using System.Windows.Input;
-  using System.Collections.Generic;
   using System.Collections.ObjectModel;
   using System.Diagnostics;
   using System.IO;
   using System.Linq;
-  using System.Timers;
   using System.Windows;
   using CommunityToolkit.Mvvm.Input;
   using Microsoft.Win32;
   using timeTrack.Views;
   using Newtonsoft.Json;
   using System.Windows.Controls;
-  using System.Threading.Tasks;
 
   public class TimeTrackVM : ObservableObject {
     #region fields
@@ -59,7 +56,7 @@
       Application.Current.Shutdown();
     }
 
-    private void StartTimer(DataGrid tasksListViewItem) {
+    private void StartTimer(DataGrid tasksListDataGrid) {
       if (string.IsNullOrEmpty(selectedTaskNameItem)) {
         MessageBox.Show("Please select a task.");
         return;
@@ -84,7 +81,11 @@
       });
 
       RaisePropertyChangedEvent(nameof(Tasklist));
-      tasksListViewItem.Items.Refresh();
+
+      tasksListDataGrid.Items.Refresh();
+
+      tasksListDataGrid.SelectedIndex = tasksListDataGrid.Items.Count - 1;
+      tasksListDataGrid.ScrollIntoView(tasksListDataGrid.Items[tasksListDataGrid.Items.Count - 1]);     
     }
 
     private void CalculateSumDurationToday() {
