@@ -13,6 +13,8 @@ namespace timeTrack
     public string TaskName { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
-    public TimeSpan Duration { get; set; }
+    public TimeSpan DurationSession { get; set;}
+    public TimeSpan DurationTaskTotalToday { get; set; }
+    public TimeSpan DurationAllTasksToday { get; set; }
   }
 }

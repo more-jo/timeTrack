@@ -39,7 +39,7 @@
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="80" />
+      <ColumnDefinition Width="150" />
       <ColumnDefinition Width="1*" />
       <ColumnDefinition Width="auto" Name="ButtonColumn"/>
     </Grid.ColumnDefinitions>
@@ -196,14 +196,14 @@
       Margin="{StaticResource Margin}"
       Grid.Column="{StaticResource TextBlockColumnPosition}"
       VerticalAlignment="Center"
-      Text="Duration"/>
+      Text="Duration Task Today"/>
     <TextBox 
       Grid.Row="7"
       Grid.Column="{StaticResource TextBoxColumnPosition}"
       Name ="TxtBoxTaskDuration"
       Margin="{StaticResource Margin}"
       MinWidth="100"
-      Text="{Binding GridSelectedTaskItem.Duration, StringFormat=hh\\:mm }"   />
+      Text="{Binding GridSelectedTaskItem.DurationTaskTotalToday, StringFormat=hh\\:mm\\:ss }"   />
     <Button 
       Grid.Row="7"
       Grid.Column="{StaticResource ButtonColumnPosition}"
