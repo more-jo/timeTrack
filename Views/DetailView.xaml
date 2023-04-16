@@ -28,9 +28,10 @@
     <Grid.RowDefinitions>
       <RowDefinition/>
       <RowDefinition/>
+      <RowDefinition/>      
       <RowDefinition/>
       <RowDefinition/>
-      <RowDefinition/>
+      
       <RowDefinition/>
       <RowDefinition/>
       <RowDefinition/>
@@ -196,14 +197,14 @@
       Margin="{StaticResource Margin}"
       Grid.Column="{StaticResource TextBlockColumnPosition}"
       VerticalAlignment="Center"
-      Text="Duration Task Today"/>
+      Text="Task Duration"/>
     <TextBox 
       Grid.Row="7"
       Grid.Column="{StaticResource TextBoxColumnPosition}"
       Name ="TxtBoxTaskDuration"
       Margin="{StaticResource Margin}"
       MinWidth="100"
-      Text="{Binding GridSelectedTaskItem.DurationTaskTotalToday, StringFormat=hh\\:mm\\:ss }"   />
+      Text="{Binding GridSelectedTaskItem.DurationTaskTotalDay, StringFormat=hh\\:mm\\:ss }"   />
     <Button 
       Grid.Row="7"
       Grid.Column="{StaticResource ButtonColumnPosition}"
@@ -212,8 +213,29 @@
       Command="{Binding CopyToClipboardCmd}"
       CommandParameter="{Binding ElementName=TxtBoxTaskDuration, Path=Text}"/>
 
-    <Button
+    <TextBlock
       Grid.Row="8"
+      Margin="{StaticResource Margin}"
+      Grid.Column="{StaticResource TextBlockColumnPosition}"
+      VerticalAlignment="Center"
+      Text="Task Duration hours"/>
+    <TextBox 
+      Grid.Row="8"
+      Grid.Column="{StaticResource TextBoxColumnPosition}"
+      Name ="TxtBoxTaskDurationCommaSeparated"
+      Margin="{StaticResource Margin}"
+      MinWidth="100"
+      Text="{Binding GridSelectedTaskItem.DurationTaskTotalDay.TotalHours, StringFormat='{}{0:N1}', ConverterCulture=de-DE, Mode=OneWay}"   />
+    <Button 
+      Grid.Row="8"
+      Grid.Column="{StaticResource ButtonColumnPosition}"
+      Margin="{StaticResource Margin}"
+      Content="Copy to Clipboard"
+      Command="{Binding CopyToClipboardCmd}"
+      CommandParameter="{Binding ElementName=TxtBoxTaskDurationCommaSeparated, Path=Text}"/>
+
+    <Button
+      Grid.Row="9"
       Grid.RowSpan="2"
       Grid.ColumnSpan="3"
       Name="btn_Close"

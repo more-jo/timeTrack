@@ -96,7 +96,7 @@
         timeSpan = timeSpan.Add(task.DurationSession);
       }
 
-      taskList[indexOfLastItem].DurationAllTasksToday = timeSpan;
+      taskList[indexOfLastItem].DurationAllTasksDay = timeSpan;
     }
 
     private void CalculateSumDurationTask() {
@@ -110,7 +110,7 @@
         }
       }
 
-      taskList[indexOfLastItem].DurationTaskTotalToday = timeSpan;
+      taskList[indexOfLastItem].DurationTaskTotalDay = timeSpan;
     }
 
     private void AddtimesToLastEntry() {

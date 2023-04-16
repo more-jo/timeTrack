@@ -19,6 +19,10 @@ namespace timeTrack.ViewModels
       Clipboard.SetText(str);
     }
 
+    private void CloseWindowCommand(FrameworkElement window) {
+      (window as Window).Close();
+    }
+
     #region Properties
 
     public TaskItem GridSelectedTaskItem 
@@ -35,11 +39,6 @@ namespace timeTrack.ViewModels
 
     public ICommand CopyToClipboardCmd => new RelayCommand<string>(CopyToClipboard);
     public ICommand CloseWindowCmd => new RelayCommand<FrameworkElement>(CloseWindowCommand);
-
-    private void CloseWindowCommand(FrameworkElement window)
-    {
-      (window as Window).Close();
-    }
 
     #endregion
   }

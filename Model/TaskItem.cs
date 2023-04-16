@@ -14,7 +14,7 @@ namespace timeTrack
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
     public TimeSpan DurationSession { get; set;}
-    public TimeSpan DurationTaskTotalToday { get; set; }
-    public TimeSpan DurationAllTasksToday { get; set; }
+    public TimeSpan DurationTaskTotalDay { get; set; }
+    public TimeSpan DurationAllTasksDay { get; set; }
   }
 }
