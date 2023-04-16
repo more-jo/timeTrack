@@ -8,7 +8,7 @@
   xmlns:local="clr-namespace:timeTrack"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   x:Name="timeTrackWindow"
-  Title="MainWindow"
+  Title="Time Tracker"
   Width="900"
   Height="559"
   d:DataContext="d:designInstance ViewModels:TimeTrackVM"
