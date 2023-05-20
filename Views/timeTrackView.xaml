@@ -174,13 +174,13 @@
       </WrapPanel>
 
       <Button
-                Name="btn_Close"
-                Margin="{StaticResource Margin}"
-                Command="{Binding CloseWindowCommand, Mode=OneWay}"
-                CommandParameter="{Binding ElementName=timeTrackWindow}"
-                Content="Close"
-                FontSize="52"
-                FontWeight="Bold" />
+            Name="btn_Close"
+            Margin="{StaticResource Margin}"
+            Command="{Binding CloseWindowCommand, Mode=OneWay}"
+            CommandParameter="{Binding ElementName=timeTrackWindow}"
+            Content="Close"
+            FontSize="52"
+            FontWeight="Bold" />
     </DockPanel>
   </Grid>
 

@@ -53,6 +53,14 @@
     }
 
     private void CloseWindowMethod() {
+      if (stopWatch.IsRunning) {
+        stopWatch.Stop();
+        AddtimesToLastEntry();
+        CalculateSumDurationTask();
+        CalculateSumDurationToday();
+        stopWatch.Reset();
+      }
+      SaveTimeTableList();
       Application.Current.Shutdown();
     }
 
