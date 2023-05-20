@@ -33,7 +33,7 @@
 
       LoadProjectList();
       LoadTimeTableList();
-      CreateTestData();
+      //CreateTestData();
     }
 
     private void CreateTestData() {
@@ -85,7 +85,7 @@
       tasksListDataGrid.Items.Refresh();
 
       tasksListDataGrid.SelectedIndex = tasksListDataGrid.Items.Count - 1;
-      tasksListDataGrid.ScrollIntoView(tasksListDataGrid.Items[tasksListDataGrid.Items.Count - 1]);     
+      tasksListDataGrid.ScrollIntoView(tasksListDataGrid.Items[tasksListDataGrid.Items.Count - 1]);
     }
 
     private void CalculateSumDurationToday() {
@@ -274,7 +274,7 @@
         RaisePropertyChangedEvent(nameof(Tasklist));
       }
       catch (Exception ex) {
-        MessageBox.Show(ex.Message);
+        MessageBox.Show("Error in time table list:" + Environment.NewLine + ex.Message);
       }
     }
 

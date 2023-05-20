@@ -38,5 +38,33 @@ namespace timeTrack.Views {
         ListBoxSelectableProjects.ScrollIntoView(ListBoxSelectableProjects.SelectedItem);
       }
     }
+
+    private void Dtg_taskList_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e) {
+      // items in .\timeTrack\Model\TaskItem.cs
+      switch (e.PropertyName) {
+        case "TaskName":
+          e.Column.Header = "Task";
+          break;
+
+        case "Start":
+          e.Column.Header = "Start";
+          break;
+
+        case "DurationSession":
+          e.Column.Header = "Session";
+          break;
+
+        case "DurationTaskTotalDay":
+          e.Column.Header = "Task Day";
+          break;
+
+        case "DurationAllTasksDay":
+          e.Column.Header = "All Tasks Day";
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 }
