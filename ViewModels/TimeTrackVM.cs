@@ -53,7 +53,7 @@
     }
 
     private void CloseWindowMethod() {
-      if (stopWatch.IsRunning) {
+      if (stopWatch != null &&  stopWatch.IsRunning) {
         stopWatch.Stop();
         AddtimesToLastEntry();
         CalculateSumDurationTask();
@@ -304,6 +304,11 @@
       return path;
     }
 
+    private void DeleteEntry(DataGrid grid) {
+      MessageBox.Show(grid.SelectedItem.ToString());
+      taskList.Remove((TaskItem)grid.SelectedItem);
+    }
+
     #endregion
 
     #region properties
@@ -321,6 +326,7 @@
     public ICommand StartTimeMeasureCommand => new RelayCommand<DataGrid>(StartTimer);
     public ICommand SaveTimeTableListCmd => new DelegateCommand(SaveTimeTableList);
     public ICommand SaveAs_TimeTableListCmd => new DelegateCommand(SaveAs_TimeTableList);
+    public ICommand DeleteEntryCmd => new RelayCommand<DataGrid>(DeleteEntry);
 
     private void ShowTimeListDetails(TaskItem selectedItem) {
       DetailView dialog = new DetailView();

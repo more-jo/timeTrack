@@ -171,6 +171,13 @@
             Margin="{StaticResource Margin}"
             Command="{Binding SaveAs_TimeTableListCmd}"
             Content="Save as" />
+
+        <Button
+            MinWidth="{StaticResource ButtonMinWidth1}"
+            Margin="{StaticResource Margin}"
+            Command="{Binding DeleteEntryCmd}"
+            CommandParameter="{Binding ElementName=Dtg_taskList}"
+            Content="Delete Entry" />
       </WrapPanel>
 
       <Button
