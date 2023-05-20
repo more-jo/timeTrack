@@ -33,7 +33,7 @@
 
       LoadProjectList();
       LoadTimeTableList();
-      CreateTestData();
+      //CreateTestData();
     }
 
     private void CreateTestData() {
@@ -53,6 +53,14 @@
     }
 
     private void CloseWindowMethod() {
+      if (stopWatch != null &&  stopWatch.IsRunning) {
+        stopWatch.Stop();
+        AddtimesToLastEntry();
+        CalculateSumDurationTask();
+        CalculateSumDurationToday();
+        stopWatch.Reset();
+      }
+      SaveTimeTableList();
       Application.Current.Shutdown();
     }
 
@@ -85,7 +93,7 @@
       tasksListDataGrid.Items.Refresh();
 
       tasksListDataGrid.SelectedIndex = tasksListDataGrid.Items.Count - 1;
-      tasksListDataGrid.ScrollIntoView(tasksListDataGrid.Items[tasksListDataGrid.Items.Count - 1]);     
+      tasksListDataGrid.ScrollIntoView(tasksListDataGrid.Items[tasksListDataGrid.Items.Count - 1]);
     }
 
     private void CalculateSumDurationToday() {
@@ -274,7 +282,7 @@
         RaisePropertyChangedEvent(nameof(Tasklist));
       }
       catch (Exception ex) {
-        MessageBox.Show(ex.Message);
+        MessageBox.Show("Error in time table list:" + Environment.NewLine + ex.Message);
       }
     }
 
@@ -296,6 +304,11 @@
       return path;
     }
 
+    private void DeleteEntry(DataGrid grid) {
+      MessageBox.Show(grid.SelectedItem.ToString());
+      taskList.Remove((TaskItem)grid.SelectedItem);
+    }
+
     #endregion
 
     #region properties
@@ -313,6 +326,7 @@
     public ICommand StartTimeMeasureCommand => new RelayCommand<DataGrid>(StartTimer);
     public ICommand SaveTimeTableListCmd => new DelegateCommand(SaveTimeTableList);
     public ICommand SaveAs_TimeTableListCmd => new DelegateCommand(SaveAs_TimeTableList);
+    public ICommand DeleteEntryCmd => new RelayCommand<DataGrid>(DeleteEntry);
 
     private void ShowTimeListDetails(TaskItem selectedItem) {
       DetailView dialog = new DetailView();
